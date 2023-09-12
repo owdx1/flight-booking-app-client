@@ -122,7 +122,7 @@ const FirmAuth = () => {
 
     if(response.status === 200) {
       toast.success(message);
-      registeredSuccessfully(true);
+      setRegisteredSuccessfully(true);
     } else{
       toast.warn(message);
     }
@@ -235,14 +235,14 @@ const FirmAuth = () => {
                 isLoading={isLoading}
                 endContent={<CarRepairIcon/>}
                 disabled = {name === '' || email === '' || isRegex === false || isMatch === false}
-                className={` bottom-0 my-auto mx-auto 
+                className={` bottom-0 my-auto mx-auto transition-all duration-250 ease-in-out 
                 ${isMatch === false || isRegex === false ? `disabled-button` : `healthy-button`}
                               
                 `}
                 onClick={() => handleRegister()}
                 
               >
-                  Firma Kaydını Gerçekleştir
+                  {registeredSuccessfully === false ? `Firma Kaydını Gerçekleştir` : `Kayıt Başarılı`}
                 
               </Button>
 

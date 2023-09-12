@@ -129,7 +129,7 @@ const FirmDrivers = () => {
 
   return (
     <div className='flex flex-col'>
-      <Dropdown>
+      <Dropdown backdrop='blur'>
         <DropdownTrigger>
 
           <Button 
@@ -140,7 +140,7 @@ const FirmDrivers = () => {
           </Button>
         </DropdownTrigger>
         <DropdownMenu variant="flat" aria-label="Dropdown menu with shortcut">
-          <DropdownItem key="new" shortcut="⌘N" endContent={<AddIcon/>} color='secondary' className='text-secondary'>Şoför ekle</DropdownItem>
+          <DropdownItem key="new" endContent={<AddIcon/>} color='secondary' className='text-secondary'>Şoför ekle</DropdownItem>
         </DropdownMenu>
       </Dropdown>
 

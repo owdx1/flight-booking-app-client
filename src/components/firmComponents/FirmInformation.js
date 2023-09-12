@@ -21,7 +21,7 @@ const FirmInformation = () => {
   return (
     <div className='w-full h-full grid grid-rows-3'>
       <div className=' flex'>
-        <div className='h-full w-96 shadow-2xl'>
+        <div className='h-full w-full shadow-2xl'>
           <div className='w-full flex m-3'>
             <Dropdown>
               <DropdownTrigger>
@@ -52,7 +52,11 @@ const FirmInformation = () => {
           
         </div>
 
-        <div className='w-full h-full shadow-2xl flex flex-col'>
+    
+        
+      </div>
+      <div className='bg-slate-300'>
+      <div className='w-full h-full shadow-2xl flex flex-col'>
           <h2 className='mx-auto  text-xl pt-2'>Firma özeti -kullanıcılar görebilir-</h2>
           
           <Textarea
@@ -67,10 +71,6 @@ const FirmInformation = () => {
             disabled = {isDescriptionDiffers === false}
             className={`${isDescriptionDiffers === true ? `healthy-button-secondary`: `disabled-button`} w-96 h-12 mx-auto mb-2`}>Güncelle</Button>
         </div>
-        
-      </div>
-      <div className='bg-slate-300'>
-        abi 
       </div>
       <div className='bg-slate-400'>
         dsaşlk

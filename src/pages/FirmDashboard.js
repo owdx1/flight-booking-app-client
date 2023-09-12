@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { MainContext, useContext } from '../useContext/context';
-import { CardBody, User } from '@nextui-org/react';
+import { CardBody, Spinner, User } from '@nextui-org/react';
 import { Card } from '@nextui-org/react';
 import { Tabs, Tab } from '@nextui-org/react';
 import FirmInformation from '../components/firmComponents/FirmInformation';
@@ -14,7 +14,7 @@ import { firmContext } from '../useContext/firmContext';
 const FirmDashboard = () => {
 
   const navigate = useNavigate();
-  const {handleLogout,isLoggedIn} = useContext(MainContext);
+  const {handleLogout,isLoggedIn,} = useContext(MainContext);
   const [firm, setFirm] = useState({});
   useEffect(() => {
     try {
@@ -37,6 +37,7 @@ const FirmDashboard = () => {
           throw new Error("Error fetching profile");
         }
         const data = await response.json();
+        
         console.log('gelen data',data);
         const { firm } = data;
         const newFirmToken = data.firmToken;
@@ -52,7 +53,10 @@ const FirmDashboard = () => {
         
       } 
 
-      if(firmToken !== null ){fetchProfile();}
+      if(firmToken !== null ){
+        
+        fetchProfile();}
+
       
     } catch (error) {
       console.error(error);
@@ -72,21 +76,21 @@ const FirmDashboard = () => {
     <firmContext.Provider value={firmData}>
       <div className="flex w-full flex-col mt-3">
         <Tabs aria-label="Options" className='ml-20'>
-          <Tab key="firm" title="Firma" className='px-20'>
+          <Tab key="firm" title="Firma" className=''>
             <Card className='firm-tab'>
               <CardBody className='w-full h-full'>
                 <FirmInformation/>
               </CardBody>
             </Card>  
           </Tab>
-          <Tab key="drivers" title="Şoförler" className='px-20'>
+          <Tab key="drivers" title="Şoförler" className=''>
             <Card className='firm-tab'>
               <CardBody>
                 <FirmDrivers/>
               </CardBody>
             </Card>  
           </Tab>
-          <Tab key="flights" title="Seferler" className='px-20'>
+          <Tab key="flights" title="Seferler" className=''>
             <Card className='firm-tab'>
               <CardBody>
                 <FirmFlights/>
@@ -95,6 +99,7 @@ const FirmDashboard = () => {
           </Tab>
         </Tabs>
       </div>
+      
     </firmContext.Provider>
   )
 }

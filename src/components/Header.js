@@ -1,10 +1,11 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { MainContext, useContext } from '../useContext/context'
-import { Button } from '@nextui-org/button';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem , Button } from '@nextui-org/react'
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
 const Header = () => {
   const navigate = useNavigate();
 
@@ -71,10 +72,25 @@ const Header = () => {
       {isLoggedIn === false ? (<NavLink to='/firm-auth'>sirket girisi</NavLink>)
       :
       (
-        <div>
-          <p>{firm.name}</p>
-          <Button onClick={() => handleHeaderLogout()}>cıkıs yap</Button>
-        </div>
+        <Dropdown>
+          <DropdownTrigger>
+
+            <Button 
+              className='w-64 h-20 text-gray-500 my-3'
+              variant='bordered'
+            >
+              <img
+              src='https://i.pravatar.cc/150?u=a042581f4e29026024d'
+              className='w-16 h-16 rounded-full object-cover'
+              />
+              {firm.name}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu variant="flat" aria-label="Dropdown menu with shortcut">
+            <DropdownItem key="firmName" endContent={<SettingsIcon/>} className='text-danger' color='danger'>Ayarlar</DropdownItem>
+            <DropdownItem key="firmName" endContent={<LogoutIcon/>} className='text-danger' color='danger' onClick={handleHeaderLogout}>Çıkış Yap</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
         
       )
       

@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 function App() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   
 
   const handleLogout = () => {
@@ -39,7 +40,8 @@ function App() {
     isLoggedIn,
     handleLogout,
     toast,
-    handleSetLoggedInToTrue
+    handleSetLoggedInToTrue,
+    
   }
   return (
     <MainContext.Provider value={data}>
