@@ -31,6 +31,7 @@ function App() {
 
     if(firmToken === null || firmToken === undefined || firmToken === ''){
       setIsLoggedIn(false);
+      localStorage.removeItem('firmToken');
     } else {
       setIsLoggedIn(true);   
     }

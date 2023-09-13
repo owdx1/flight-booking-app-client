@@ -70,7 +70,6 @@ const users = [
 const statusColorMap = {
   onayli: "success",
   onaylidegil: "danger",
-  
 };
 
 

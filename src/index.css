@@ -34,3 +34,10 @@ code {
 .firm-tab {
   @apply bg-stone-100 w-full h-[64rem] shadow-2xl
 }
+
+.active-chip {
+  @apply
+  bg-slate-600
+  text-white
+    
+}
