@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Chip, Switch } from '@nextui-org/react'
 import { Accordion, AccordionItem, Button, Card} from '@nextui-org/react';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
@@ -10,6 +10,7 @@ import CreateFirmModal from './CreateFirmModal';
 import {useDisclosure} from "@nextui-org/react";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { MainContext, useContext } from '../../useContext/context';
 
 
 
@@ -67,11 +68,25 @@ const flightType = {
 }
 
 const FirmFlights = () => {
+  const {toast} = useContext(MainContext)
   const [isSwitchActive , setIsSwitchActive] = useState(false);
+  const [displayedFlights, setDisplayedFlights] = useState([]);
   const {isOpen, onOpen, onClose} = useDisclosure();
   const createFirmData = {
-    isOpen , onClose, onOpen
+    isOpen , onClose, onOpen, toast
   }
+  
+
+
+  useEffect(() => {
+    if(isSwitchActive === true) {
+      const filtered = flightsArray.filter((flight) => flight.status === 0)
+      setDisplayedFlights(filtered); 
+    }
+    else {
+      setDisplayedFlights(flightsArray);
+    }
+  }, [isSwitchActive])
 
 
   return (
@@ -94,10 +109,10 @@ const FirmFlights = () => {
             >Sefer Oluştur</DropdownItem>
           </DropdownMenu>
         </Dropdown>
-        <Switch color={`${isSwitchActive ? 'warning' : ''}`} isSelected={isSwitchActive} onValueChange={setIsSwitchActive}>Sadece aktifleri gör</Switch>
+        <Switch color={`${isSwitchActive ? 'success' : ''}`} isSelected={isSwitchActive} onValueChange={setIsSwitchActive}>Sadece aktifleri gör</Switch>
       </div>
       <Accordion className=''>
-        {flightsArray.map((flight) => (
+        {displayedFlights.map((flight) => (
           <AccordionItem 
           startContent=
           

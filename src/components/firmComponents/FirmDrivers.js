@@ -7,6 +7,7 @@ import { Chip } from '@nextui-org/react';
 import { Tooltip } from '@nextui-org/react';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
 import AddIcon from '@mui/icons-material/Add';
+import { drivers } from '../../data/drivers';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem , Button } from '@nextui-org/react'
 const columns = [
   {name: "İSİM", uid: "name"},
@@ -15,58 +16,8 @@ const columns = [
   {name: "", uid: "actions"},
 ];
 
-const users = [
-  {
-    id: 1,
-    name: "can",
-    role: "sofor",
-    team: "tokat",
-    status: "onayli",
-    age: "23",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    phone: "507 548 47 03",
-  },
-  {
-    id: 2,
-    name: "can",
-    role: "muavin mq",
-    team: "lkş",
-    status: "onayli",
-    age: "25",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    phone: "tel",
-  },
-  {
-    id: 3,
-    name: "vural",
-    role: "sofor",
-    team: "ankq",
-    status: "onaylidegil",
-    age: "22",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    phone: "56",
-  },
-  {
-    id: 4,
-    name: "lkşk ",
-    role: "jklj",
-    team: "jkkj",
-    status: "onaylidegil",
-    age: "28",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    phone: "654",
-  },
-  {
-    id: 5,
-    name: "o o",
-    role: " ı",
-    team: "ııu",
-    status: "onayli",
-    age: "24",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    phone: "65456444",
-  },
-];
+
+
 const statusColorMap = {
   onayli: "success",
   onaylidegil: "danger",
@@ -151,7 +102,7 @@ const FirmDrivers = () => {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={users}>
+        <TableBody items={drivers}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}

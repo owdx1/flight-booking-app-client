@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem , Button } from '@nextui-org/react'
 import SettingsIcon from '@mui/icons-material/Settings';
+import CoPresentIcon from '@mui/icons-material/CoPresent';
 import LogoutIcon from '@mui/icons-material/Logout';
 const Header = () => {
   const navigate = useNavigate();
@@ -87,7 +88,8 @@ const Header = () => {
             </Button>
           </DropdownTrigger>
           <DropdownMenu variant="flat" aria-label="Dropdown menu with shortcut">
-            <DropdownItem key="firmName" endContent={<SettingsIcon/>} className='text-danger' color='danger'>Ayarlar</DropdownItem>
+            <DropdownItem key="firmName" endContent={<CoPresentIcon/>}  onClick={() => navigate('/firm-dashboard')}>Anasayfa</DropdownItem>
+            <DropdownItem key="firmName" endContent={<SettingsIcon/>} >Ayarlar</DropdownItem>
             <DropdownItem key="firmName" endContent={<LogoutIcon/>} className='text-danger' color='danger' onClick={handleHeaderLogout}>Çıkış Yap</DropdownItem>
           </DropdownMenu>
         </Dropdown>

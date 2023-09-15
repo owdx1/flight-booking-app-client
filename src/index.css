@@ -18,7 +18,7 @@ code {
 }
 
 .disabled-button {
-  @apply bg-slate-200 text-gray-400
+  @apply bg-slate-200 text-gray-400 
 }
 
 .healthy-button {
