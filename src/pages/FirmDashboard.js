@@ -7,7 +7,8 @@ import { Tabs, Tab } from '@nextui-org/react';
 import FirmInformation from '../components/firmComponents/FirmInformation';
 import FirmDrivers from '../components/firmComponents/FirmDrivers';
 import FirmFlights from '../components/firmComponents/FirmFlights';
-import { firmContext } from '../useContext/firmContext';
+import { FirmContext } from '../useContext/firmContext';
+import { toast } from 'react-toastify';
 
 
 
@@ -15,7 +16,46 @@ const FirmDashboard = () => {
 
   const navigate = useNavigate();
   const {handleLogout,isLoggedIn,} = useContext(MainContext);
+  const [currentFlights , setCurrentFlights] = useState([]);
   const [firm, setFirm] = useState({});
+
+
+  useEffect(() => {
+    try {
+      const firmToken = localStorage.getItem('firmToken');
+      const fetchFlights = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/flight/get-flights' ,{
+            headers: {
+              'authorization' : `Bearer ${firmToken}`
+            }
+          })
+          const responseData = await response.json();
+          const message = responseData.message ? responseData.message : '';
+          console.log('flight geldi mi' , responseData);
+          console.log(responseData.flights);
+
+          if(response.status === 200) setCurrentFlights(responseData.flights);
+          if(response.status === 500) toast.warn(message);
+          
+        } catch (error) {
+          console.error(error)
+          
+        }
+      }
+
+      fetchFlights();
+      
+    } catch (error) {
+      console.error(error)
+    }
+
+
+  }, [])
+
+
+
+
   useEffect(() => {
     try {
       const firmToken = localStorage.getItem('firmToken');
@@ -52,7 +92,6 @@ const FirmDashboard = () => {
         }
         
       } 
-
       if(firmToken !== null ){
         
         fetchProfile();}
@@ -66,14 +105,15 @@ const FirmDashboard = () => {
 
 
   const firmData = {
-    firm
+    firm,
+    currentFlights
   }
 
   
 
 
   return (
-    <firmContext.Provider value={firmData}>
+    <FirmContext.Provider value={firmData}>
       <div className="flex w-full flex-col mt-3">
         <Tabs aria-label="Options" className='ml-20'>
           <Tab key="firm" title="Firma" className=''>
@@ -100,7 +140,7 @@ const FirmDashboard = () => {
         </Tabs>
       </div>
       
-    </firmContext.Provider>
+    </FirmContext.Provider>
   )
 }
 

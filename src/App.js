@@ -9,6 +9,9 @@ import FirmDashboard from './pages/FirmDashboard';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer , toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import Modaltry from './pages/Modaltry';
+import Footer from './components/firmComponents/Footer';
+import SearchedFlights from './pages/SearchedFlights';
 
 
 
@@ -51,8 +54,11 @@ function App() {
         <Route path='/' element={<Home/>}/>
         <Route path='/firm-auth' element={<FirmAuth/>}/>
         <Route path='/firm-dashboard' element={<FirmDashboard/>} />
+        <Route path='/modaltry' element={<Modaltry/>}/>
+        <Route path='/searched-flights' element={<SearchedFlights/>}></Route>
       </Routes>
 
+      {/*<Footer/>*/}
       <ToastContainer/>
     </MainContext.Provider>
   

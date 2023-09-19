@@ -10,8 +10,10 @@ import { days } from '../../data/days';
 import { drivers } from '../../data/drivers';
 import { Select, SelectItem } from '@nextui-org/react';
 import { Avatar } from '@nextui-org/react';
-
-import { MainContext } from '../../useContext/context';
+import AddIcon from '@mui/icons-material/Add';
+import TrainIcon from '@mui/icons-material/Train';
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
 const CreateFirmModal = () => {
 
   {/****
@@ -37,11 +39,15 @@ const CreateFirmModal = () => {
   const [isFlightReadyToCreate, setIsFlightReadyToCreate] = useState(false);
   const [flightInformation, setFlightInformation] = useState('');
   const [isLoadingCreateFlight , setIsLoadingCreateFlight] = useState(false);
+  const [flightType , setFlightType] = useState('');
+  const [flightDateDateObj , setFlightDateDateObj] = useState(new Date());
   const [flightDate , setFlightDate] = useState({
     mounth:'',
     day:'',
-    year:'',
-    dayName:''
+    year:-1,
+    dayName:'',
+    mounthId: -1,
+
   });
   const handleCaptainIdChange = (e) => {
     setSelectedCaptainId(e.target.value);
@@ -49,11 +55,6 @@ const CreateFirmModal = () => {
   const handleHandmanIdChange = (e) => {
     setSelectedHandmanId(e.target.value);
   };
-
-  useEffect(() => {
-    console.log(selectedCaptainId);
-  }, [selectedCaptainId])
-
 
   const handleAddToDirection = (cityId) => {
 
@@ -64,21 +65,25 @@ const CreateFirmModal = () => {
       setDirection(withoutSpecificIdArray)
     }
   }
-
+  const handleFlightTypeChange = (e) => {
+    setFlightType(e.target.value);
+  }
   const handleFlightDateChange = (date) => {
-    console.log(date);
+    setFlightDateDateObj(date);
     const year = date.$y;
     const monthID = date.$M
     const day = date.$D
     const dayNameId = date.$W;
     setFlightDate({
-      mounth: months[monthID],
+      month: months[monthID],
       year: year,
       dayName: days[dayNameId],
-      day: day
+      day: day,
+      monthId:monthID,
+      dayNameId:dayNameId
+
     })
   }
-
   
   const handleDoublePathChange = (e, type , startingCityId, finishingCityId) => {
     const input = e.target.value
@@ -108,8 +113,6 @@ const CreateFirmModal = () => {
     }
   }
 
-  
-
   useEffect(() => {
     let totalPrice = 0;
     let totalMinutes = 0;
@@ -128,18 +131,17 @@ const CreateFirmModal = () => {
   }, [doublePathArray]);
 
   const handleCreateFlight = async () => {
-    console.log('bastım abiicm');
     const firmToken = localStorage.getItem('firmToken')
 
     try {
       
-      isLoadingCreateFlight(true);
+      setIsLoadingCreateFlight(true);
       const response = await fetch (`http://localhost:5000/flight/create-flight`, {
         method:'POST',
-        body:JSON.stringify({direction , flightTime , flightDate , selectedCaptainId , selectedHandmanId , doublePathArray}),
+        body:JSON.stringify({direction , flightTime , flightDate , flightType ,selectedCaptainId , selectedHandmanId , doublePathArray, flightDateDateObj}),
         headers:{
-          'Content-Type':'application/json',
-          'Authorization':`Bearer ${firmToken}`
+          'Content-Type' :'application/json',
+          'authorization':`Bearer ${firmToken}`
         }
       })
 
@@ -159,6 +161,7 @@ const CreateFirmModal = () => {
       toast.warn(error)
     }
   }
+  
 
 
 
@@ -168,7 +171,7 @@ const CreateFirmModal = () => {
 
 
   useEffect(() => {
-    if (direction.length - 1 === doublePathArray.length && flightTime !== '' && flightDate.mounth !== '' && selectedCaptainId !== '' && selectedHandmanId !== ''){
+    if (direction.length - 1 === doublePathArray.length && flightTime !== '' && flightDate.mounth !== '' && selectedCaptainId !== '' && selectedHandmanId !== '' && flightType !== ''){
       setIsFlightReadyToCreate(true)
     }
     else{
@@ -177,9 +180,6 @@ const CreateFirmModal = () => {
 
   }, [doublePathArray , flightTime , flightDate])
 
-  useEffect(() =>{
-    console.log(selectedCaptainId , selectedHandmanId);
-  },[selectedCaptainId , selectedHandmanId])
 
 
 
@@ -230,7 +230,7 @@ const CreateFirmModal = () => {
               <div className='flex w-full gap-2'>
                 <StaticDatePicker
                   label="Tarih seçiniz"
-                  defaultValue={dayjs('2023-04-17')}
+                  defaultValue={dayjs()}
                   onChange={(newValue) => handleFlightDateChange(newValue)}
                   format='DD / MM / YYYY'
                   className='bg-white rounded-l shadow-xl'
@@ -269,7 +269,7 @@ const CreateFirmModal = () => {
                     >
                       {drivers.map((driver) => (
                         <SelectItem
-                        disabled={true}
+                        
                         key={driver.id}
                         endContent={<Avatar alt={driver.id} className="w-6 h-6" src={driver.avatar} />}
                         
@@ -281,6 +281,18 @@ const CreateFirmModal = () => {
                     </Select>
                     
                   </div>
+                  <Select
+                  label='Seyahat Tipi'
+                  onChange={handleFlightTypeChange}
+                  className='mt-2'
+                  >
+                    <SelectItem key='bus' endContent={<DirectionsBusFilledIcon/>}>Otobüs</SelectItem>
+                    <SelectItem key='train' endContent={<TrainIcon/>}>Tren</SelectItem>
+                    <SelectItem key='plane' endContent={<FlightTakeoffIcon/>}>Uçak</SelectItem>
+
+
+                  </Select>
+
                   
                 
                   

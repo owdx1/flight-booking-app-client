@@ -7,6 +7,8 @@ import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem , Button } from '
 import SettingsIcon from '@mui/icons-material/Settings';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import LogoutIcon from '@mui/icons-material/Logout';
+import logo from '../images/biletinyo-logo.jpg'
+import logoBakgroundless from '../images/biletinyo-logo-removebg-preview.png'
 const Header = () => {
   const navigate = useNavigate();
 
@@ -67,18 +69,27 @@ const Header = () => {
 
 
   return (
-    <div className='w-full h-24 flex justify-evenly bg-slate-300'>
-      <div className='mx-auto my-auto'>logo</div>
-      <div className='mx-auto my-auto'>
-      {isLoggedIn === false ? (<NavLink to='/firm-auth'>sirket girisi</NavLink>)
-      :
-      (
+    <div className='w-full h-24 flex justify-between bg-gradient-to-tr bg-gray-500 text-white rounded-b-xl'>
+      <NavLink to='/' className='mt-2 ml-10 p-0'>
+        <img src={logoBakgroundless} className='h-20 my-auto'></img>
+      </NavLink>
+      
+      <div className=''>
+        {isLoggedIn === false ? (
+          <div className='w-64 h-16 text-white flex shadow-xl my-4 mr-10 justify-center'>
+            <NavLink to='/firm-auth' className='bg-slate-700 text-white w-full flex rounded-xl hover:bg-slate-500'>
+              <p className='mx-auto my-auto font-light font-mono' style={{letterSpacing:'0.1rem'}}>Şirket Girişi</p>
+            </NavLink>
+          </div>
+        )
+        :
+        (
         <Dropdown>
           <DropdownTrigger>
 
             <Button 
-              className='w-64 h-20 text-gray-500 my-3'
-              variant='bordered'
+              className='w-64 h-16 text-white flex shadow-xl my-4 mr-10 bg-gray-700'
+              variant='light'
             >
               <img
               src='https://i.pravatar.cc/150?u=a042581f4e29026024d'
@@ -94,9 +105,9 @@ const Header = () => {
           </DropdownMenu>
         </Dropdown>
         
-      )
+        )
       
-      }
+        }
       </div>
     </div>
   )

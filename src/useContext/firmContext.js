@@ -1,8 +1,8 @@
 import { createContext , useContext } from "react";
 
-const firmContext = createContext(null);
+const FirmContext = createContext(null);
 
 export {
-  firmContext,
+  FirmContext,
   useContext
 }

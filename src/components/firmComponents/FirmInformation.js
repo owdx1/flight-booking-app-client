@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { firmContext , useContext } from '../../useContext/firmContext'
+import { FirmContext , useContext } from '../../useContext/firmContext'
 import { Input, Textarea, User } from '@nextui-org/react'
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem , Button } from '@nextui-org/react'
 import ClearIcon from '@mui/icons-material/Clear';
@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 const FirmInformation = () => {
 
-  const {firm} = useContext(firmContext)
+  const {firm} = useContext(FirmContext)
   const [firmDescription, setFirmDescription] = useState('biz cok iyi firmayız soyle iyiyiz boyle iyiyizbiz cok iyi firmayız soyle iyiyiz boyle iyiyizbiz cok iyi firmayız soyle iyiyiz boyle iyiyizbiz cok iyi firmayız soyle iyiyiz boyle iyiyizbiz cok iyi firmayız soyle iyiyiz boyle iyiyizbiz cok iyi firmayız soyle iyiyiz boyle iyiyizbiz cok iyi firmayız soyle iyiyiz boyle iyiyizbiz cok iyi firmayız soyle iyiyiz boyle iyiyizbiz cok iyi firmayız soyle iyiyiz boyle iyiyiz');
   
   const [isDescriptionDiffers, setIsDescriptionDiffers] = useState(false);

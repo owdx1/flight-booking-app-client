@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Chip, Switch } from '@nextui-org/react'
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Chip, Switch, Avatar, Popover } from '@nextui-org/react'
 import { Accordion, AccordionItem, Button, Card} from '@nextui-org/react';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
 import AddIcon from '@mui/icons-material/Add';
@@ -11,6 +11,13 @@ import {useDisclosure} from "@nextui-org/react";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { MainContext, useContext } from '../../useContext/context';
+import {FirmContext} from '../../useContext/firmContext'
+import { cities } from '../../data/cities';
+import { drivers } from '../../data/drivers';
+import dayjs from 'dayjs';
+import { days } from '../../data/days';
+import { circIn } from 'framer-motion';
+
 
 
 
@@ -68,6 +75,11 @@ const flightType = {
 }
 
 const FirmFlights = () => {
+
+  const todaysDate = dayjs();
+  
+
+  const {currentFlights} = useContext(FirmContext);
   const {toast} = useContext(MainContext)
   const [isSwitchActive , setIsSwitchActive] = useState(false);
   const [displayedFlights, setDisplayedFlights] = useState([]);
@@ -79,14 +91,22 @@ const FirmFlights = () => {
 
 
   useEffect(() => {
-    if(isSwitchActive === true) {
-      const filtered = flightsArray.filter((flight) => flight.status === 0)
-      setDisplayedFlights(filtered); 
+    console.log(currentFlights);
+  
+    if (isSwitchActive === true) {
+      const filtered = currentFlights.filter((flight) => {
+        const flightDate = flight.flightDateDateObj !== null ? dayjs(flight.flightDateDateObj) : {};
+        console.log('flightDate dayjs e donustukten sonra' , flightDate);
+        
+
+        return (flightDate.$y >= todaysDate.$y && flightDate.$M >= todaysDate.$M && flightDate.$D >= todaysDate.$D);
+      });
+      console.log('filtered flights', filtered);
+      setDisplayedFlights(filtered);
+    } else {
+      setDisplayedFlights(currentFlights);
     }
-    else {
-      setDisplayedFlights(flightsArray);
-    }
-  }, [isSwitchActive])
+  }, [isSwitchActive]);
 
 
   return (
@@ -111,8 +131,23 @@ const FirmFlights = () => {
         </Dropdown>
         <Switch color={`${isSwitchActive ? 'success' : ''}`} isSelected={isSwitchActive} onValueChange={setIsSwitchActive}>Sadece aktifleri gör</Switch>
       </div>
+      {displayedFlights.length === 0 ? <Chip variant='dot' color='danger'>Gösterilecek sefer bulunamadı</Chip> : ''}
       <Accordion className=''>
-        {displayedFlights.map((flight) => (
+        
+        {displayedFlights.map((flight) => {
+
+          const captainArray = drivers.filter((driver) => driver.id === parseInt(flight.captainId)) // burda duruma göre parseint yok, parseint olmayan versioyna geç
+          const captain = captainArray.length !== 0 ? captainArray[0] : null;
+          const handmanArray = drivers.filter((handman) => handman.id === parseInt(flight.handmanId))
+          const handman = handmanArray.length !== 0 ? handmanArray[0] : null
+          const flightDate = dayjs(flight.flightDateDateObj);
+          
+          let status = 0
+          
+          
+          if((flightDate.$y <= todaysDate.$y) && (flightDate.$M <= todaysDate.$M) && (flightDate.$D <= todaysDate.$D)) status = 1;
+          
+          return (
           <AccordionItem 
           startContent=
           
@@ -125,23 +160,109 @@ const FirmFlights = () => {
                 content: "drop-shadow shadow-black text-white",
               }}
             >
-              {flightType[flight.flight_type]}
+              {flightType[flight.flightType]}
 
             </Chip>
             
-              <Chip color={statusColorMap[flight.status]} className=' ml-2' variant='dot'>
-                {statusMap[flight.status]}
+              <Chip color={statusColorMap[status]} className=' ml-2' variant='dot'>
+                {statusMap[status]}
               </Chip>
             </div>
           }
           key={flight.flight_id} aria-label={flight.flight_id} className='bg-stone-100 mt-3 shadow-sm'
-          title={`${flight.flight_start} - ${flight.flight_end} ${flight.flight_time} ${flight.flight_day} (${flight.flight_hour}) ${flight.price} TL`}>
-            <Card className='w-[72rem] h-[20rem] bg-slate-200 mx-auto my-auto gap-3'>
 
+          title = {
+            <div className='flex w-full  justify-evenly'>
+              <div className='flex cities gap-2 w-48'>
+                <p className='mx-auto'>{Object.keys(cities)[flight.direction[0] - 1]}</p>
+                <p>-</p>
+                <p className='mx-auto'>{Object.keys(cities)[flight.direction[flight.direction.length - 1] - 1]}</p>
+              </div>
+              <Chip variant='dot' color='warning'>{flight.flightDate}</Chip>
+              <Chip variant='dot' color='warning'>{days[flight.dayNameId]}</Chip>
+              <Chip variant='dot' color='warning'>{flight.flightTime}</Chip>
+            </div>
+          }
+          >
+            <Card className='w-full h-[24rem] flex flex-col'>
+              <div className='flex w-full justify-evenly h-12'>
+                <div className='flex gap-1'>
+                  <Chip className='flex my-auto border-none' variant='dot' color='success'>Kaptan: {captain.name}</Chip>
+                  <Avatar src={captain.avatar} className='w-6 h-6 my-auto'></Avatar>
+
+                </div>
+                <div className='flex gap-1'>
+                  <Chip variant='dot' color='success' className='my-auto border-none'>Muavin: {handman.name}</Chip>
+                  <Avatar src={handman.avatar} className='w-6 h-6 my-auto'></Avatar>
+                </div>
+                <div className='shadow-md rounded-xl flex w-52 h-full justify-center'>
+                  <Chip variant='light' className='my-auto'>Toplam Gelir:</Chip>
+                  <Chip variant='light' style={{fontSize:'20px'}} className='my-auto'> {flight.totalIncome} TL </Chip>
+                  
+                </div>
+                <div className='shadow-md rounded-xl flex w-48 h-full justify-center'>
+                <Chip variant='light' className='my-auto'>Toplam Yolcu:</Chip>
+                <Chip variant='light' style={{fontSize:'20px'}} className='my-auto'>{flight.totalPassangers}</Chip>
+                </div>
+              </div>
+              <div className='w-[calc(100%-29rem)] h-48 flex flex-wrap gap-1.5 ml-2 mt-2'>
+                {flight.seats.map((seat) => {
+                  console.log(seat.bookersInformation);
+                  let totalMoneyFromThisSeat = 0;
+                  seat.bookersInformation.map((booker) => {
+                    totalMoneyFromThisSeat += booker.customersTotalPayment
+                  })
+                  
+                  
+                  return (
+                    <Dropdown size='lg'>
+                      <DropdownTrigger>
+                        <Chip
+                          className='m-0 p-0 border-none cursor-pointer hover:bg-slate-100'
+                          color={`${seat.bookingCounter === 0 ? '' : 'success'}`}
+                          variant='dot'
+                        >
+                          {seat.seatNumber}
+                        </Chip>
+                      </DropdownTrigger>
+                      <DropdownMenu className='hover:bg-none'>
+                        <DropdownItem className=''>
+                          <Card className='rounded-none hover:bg-none bg-none'>
+                            <p className='mx-auto mt-2'>Kullanım Sayısı: {seat.bookingCounter}</p>
+                            <p className='mx-auto mt-2'>Koltuk getirisi: {totalMoneyFromThisSeat} TL</p>
+                            <p className='mt-3 mx-auto' style={{fontSize:'20px'}}>Koltuk Yolcu Listesi</p>
+                            
+                          </Card>
+                        </DropdownItem>
+                        <DropdownItem className='hover:bg-white '>
+                          {seat.bookersInformation.map((booker) => {
+                            return (
+                              <Card className='rounded-none hover:bg-none bg-none border shadow-lg mt-2'>
+                                <Chip variant='dot' className='border-none rounded-md'  color='secondary'>{booker.customersName}</Chip>
+                                <Chip variant='dot' className='border-none rounded-md'  color='secondary'>{booker.customersID}</Chip>
+                                <Chip variant='dot' className='border-none rounded-md'  color='secondary'>{booker.customersPhone}</Chip>
+                                <Chip variant='dot' className='border-none rounded-md'  color='secondary'>{booker.customersEmail}</Chip>
+                                <Chip variant='dot' className='border-none rounded-md'  color='secondary'>{Object.keys(cities)[booker.customersStartingCityId -1]} - {Object.keys(cities)[booker.customersEndingCityId - 1]}</Chip>
+
+                                
+                              </Card>
+                            )
+                          })}
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
+                  )
+                })}
+              </div>
+              <div className=' w-64 flex left-1 justify-evenly'>
+                <Chip variant='light' className='cursor-pointer hover:bg-slate-200 rounded-md'>Düzenle</Chip>
+                <Chip color='danger' variant='shadow' className='rounded-md cursor-pointer hover:bg-red-200'>Seferi Sil</Chip>
+
+              </div>
             </Card>
 
-          </AccordionItem>
-        ))}
+          </AccordionItem>  
+        )})}
       </Accordion>
 
       <CreateFirmContext.Provider value={createFirmData}>

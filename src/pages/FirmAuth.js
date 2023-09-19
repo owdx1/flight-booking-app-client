@@ -9,7 +9,9 @@ import CarRepairIcon from '@mui/icons-material/CarRepair';
 import { Chip } from '@nextui-org/react';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import ClearIcon from '@mui/icons-material/Clear';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
+import LockPersonIcon from '@mui/icons-material/LockPerson';
 
 
 
@@ -186,7 +188,9 @@ const FirmAuth = () => {
     <div className='w-[1500px] h-[640px] flex'>
       <div className='w-full h-full grid grid-flow-row grid-cols-2 mx-auto'>
         <Accordion variant='shadow' className='w-[30rem] h-[38rem] mr-2 ml-2 mt-2 mb-2 bg-slate-200 mx-auto my-auto' isCompact>
-          <AccordionItem key={1} aria-label='Kayıt Ol' title='Kayıt Ol'>
+          <AccordionItem className='' key={1} aria-label='Kayıt Ol' title={
+            <p className='my-auto'>Kayıt Ol</p>
+          } startContent={<LockOpenIcon/>}>
             <Card className='w-[28rem] h-[32rem] bg-slate-200 mx-auto my-auto gap-3'>
               <h1 className='mx-auto text-gray-900 h-8 my-auto'>Firma Kayıt</h1>
               <Input
@@ -249,7 +253,7 @@ const FirmAuth = () => {
 
             </Card>
           </AccordionItem>
-          <AccordionItem key={2} aria-label='Giriş Yap' title='Giriş yap'> 
+          <AccordionItem key={2} aria-label='Giriş Yap' title='Giriş yap' className='' startContent={<LockPersonIcon/>}> 
           <Card className='w-[28rem] h-[32rem] bg-slate-200 mx-auto my-auto gap-3'>
               <h1 className='mx-auto text-gray-900 h-8 my-auto'>Firma Giriş</h1>
               <Input
