@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import Modaltry from './pages/Modaltry';
 import Footer from './components/firmComponents/Footer';
 import SearchedFlights from './pages/SearchedFlights';
+import Payment from './pages/Payment';
 
 
 
@@ -59,6 +60,7 @@ function App() {
         <Route path='/firm-dashboard' element={<FirmDashboard/>} />
         <Route path='/modaltry' element={<Modaltry/>}/>
         <Route path='/searched-flights' element={<SearchedFlights/>}></Route>
+        <Route path='/payment' element={<Payment/>}></Route>
       </Routes>
 
       {/*<Footer/>*/}

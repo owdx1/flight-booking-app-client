@@ -19,10 +19,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import { Badge } from '@nextui-org/react';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import {Popover, PopoverTrigger, PopoverContent} from "@nextui-org/react";
 
 
 const SearchedFlights = () => {
-
+  const navigate = useNavigate();
   const {activeFlightType, setActiveFlightType} = useContext(MainContext);
 
   const flightType = {
@@ -40,12 +42,13 @@ const SearchedFlights = () => {
   const year = searchParams.get('year');
   const dayID = searchParams.get('dayID');
   const type = searchParams.get('type');
-  const [selectedSeatId , setSelectedSeatId] = useState('');
+  const selectedSeatId = searchParams.get('selectedSeatID');
+  const [selectedSeatIdUseState , setSelectedSeatIdUseState] = useState('');
   const defaultDate = new Date(year, monthID, dayID);
-  console.log(eid);
+  
   const [isLoading , setIsloading] = useState(false);
   const [currentFlights, setCurrentFlights] = useState([]);
-  const [filteredFlights, setFilterefFlights] = useState([]);
+
 
 
 
@@ -89,7 +92,7 @@ const SearchedFlights = () => {
   }, [])
   const handleStartingCityChange = (event) => {
     const cityName = event.target.value;
-    console.log('city name' ,cityName);
+    
     
     //setStartingCityID(cities[cityName])
     searchParams.set('sid', cities[cityName])
@@ -100,6 +103,21 @@ const SearchedFlights = () => {
       `?${searchParams.toString()}`
     )
   };
+  const handleSelectedSeatIdChange = (seatId) => {
+    searchParams.set('selectedCityID' , seatId);
+    if(selectedSeatIdUseState === seatId) {
+      setSelectedSeatIdUseState('');
+    }
+    else {
+      setSelectedSeatIdUseState(seatId);
+    }
+
+    window.history.pushState(
+      null,
+      "",
+      `?${searchParams.toString()}`
+    )
+  }
 
   const handleFinishingCityChange = (event) => {
     const cityName = event.target.value;
@@ -121,6 +139,11 @@ const SearchedFlights = () => {
         <CircularProgress className='mx-auto my-auto' label='Seferler yükleniyor...'/>
       </div>
     )
+  }
+  const handleNavigatePayment = () => {
+
+      navigate(`/payment?${searchParams}`)
+    
   }
 
   return ( 
@@ -186,7 +209,7 @@ const SearchedFlights = () => {
 
               return (
 
-                <AccordionItem indicator='Koltuk seç'  title= {
+                <AccordionItem key={flight._id} indicator='Koltuk seç'  title= {
                   <div className='w-full h-24 flex justify-evenly shadow-xl bg-stone-50'>
                     <div className='flex gap-2 w-full'>
                       <div className='mx-auto my-auto min-w-[10rem] flex'>
@@ -234,7 +257,7 @@ const SearchedFlights = () => {
                         const seatFirst = direction.indexOf(parseInt(seat.selectedFirstCityId));
                         const seatSecond = direction.indexOf(parseInt(seat.selectedSecondCityId));
                         
-                        console.log(searchFirst , seatFirst , searchSecond , seatFirst);
+                        
                         
                         if (searchFirst <= seatFirst && searchSecond <= seatFirst) {
                           selectedColor = 'text-stone-200';
@@ -266,14 +289,15 @@ const SearchedFlights = () => {
 
                         
                         return (
+                          
                           <div className={`cursor-pointer  ${selectedColor === 'text-[#c7e2fb]' ? 'pointer-events-none' : ''} `} onClick={() => {
-                            seat._id === selectedSeatId ? setSelectedSeatId('') : setSelectedSeatId(seat._id)
+                            seat._id === selectedSeatIdUseState ? handleSelectedSeatIdChange('') : handleSelectedSeatIdChange(seat._id)
                           }}
                           
                           >
                           <Badge className='h-0 w-0' content={seat.seatNumber}>
                             <EventSeatIcon style={{ fontSize:'32px'}}
-                            className={`${selectedSeatId === seat._id ? 'text-green-400': selectedColor} transition-all duration-300 ease-in-out`}/>
+                            className={`${selectedSeatIdUseState === seat._id ? 'text-green-400': selectedColor} transition-all duration-300 ease-in-out`}/>
                           </Badge>
                           </div>
                           
@@ -282,7 +306,7 @@ const SearchedFlights = () => {
                       })}
                     </div>
                     <div className='right-0 mt-2'>
-                      <Button className={`${selectedSeatId === '' ? 'disabled-button' : 'healthy-button'} text-gray-100`}>
+                      <Button onClick={() => handleNavigatePayment()} className={`${selectedSeatIdUseState === '' ? 'disabled-button' : 'healthy-button'} text-gray-100`}>
                         onayla ve devam et
                       </Button>
                     </div>
