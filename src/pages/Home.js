@@ -2,22 +2,24 @@ import Background from '../components/Background';
 import { MainContext } from '../useContext/context';
 import FlightSelection from '../components/FlightSelection';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { useState } from 'react';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useContext, useState } from 'react';
 
 
 
 function Home() {
 
-  const [activeFlightType, setActiveFlightType] = useState('');
-
-
+  const {activeFlightType, setActiveFlightType} = useContext(MainContext);
 
   const data = {
-    
-    activeFlightType,
-    setActiveFlightType,
+    activeFlightType ,
+    setActiveFlightType
   }
+  
+
+
+
+ 
   
   return (
     <MainContext.Provider value={data}>

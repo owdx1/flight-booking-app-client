@@ -254,7 +254,7 @@ const FirmFlights = () => {
                   )
                 })}
               </div>
-              <div className=' w-64 flex left-1 justify-evenly'>
+              <div className='w-64 flex left-1 justify-evenly'>
                 <Chip variant='light' className='cursor-pointer hover:bg-slate-200 rounded-md'>Düzenle</Chip>
                 <Chip color='danger' variant='shadow' className='rounded-md cursor-pointer hover:bg-red-200'>Seferi Sil</Chip>
 

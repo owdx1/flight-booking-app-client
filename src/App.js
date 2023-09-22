@@ -18,6 +18,7 @@ import SearchedFlights from './pages/SearchedFlights';
 
 function App() {
   const navigate = useNavigate();
+  const [activeFlightType, setActiveFlightType] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   
@@ -45,6 +46,8 @@ function App() {
     handleLogout,
     toast,
     handleSetLoggedInToTrue,
+    activeFlightType,
+    setActiveFlightType
     
   }
   return (

@@ -7,11 +7,12 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
-import FlightVehicleHeader from '../utils/FlightVehicleHeader';
 import { Select, SelectItem } from '@nextui-org/react';
 import {cities} from '../data/cities'
 import { useNavigate } from 'react-router-dom';
-
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import TrainIcon from '@mui/icons-material/Train';
+import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
 
 
 function FlightSelection() {
@@ -22,6 +23,7 @@ function FlightSelection() {
   const year = searchParams.get('year');
   const monthID = searchParams.get('monthID');
   const dayID = searchParams.get('dayID');
+  const type = searchParams.get('type');
   const {toast, activeFlightType} = useContext(MainContext);
   //const [startingCityID, setStartingCityID] = useState(0);
   //const [finishingCityID, setFinishingCityID] = useState(0);
@@ -64,6 +66,18 @@ function FlightSelection() {
     )
    
   };
+  const handleActiveFlightTypeChange = (newType) => {
+    if(type === newType){
+      searchParams.set('type' , '')
+    } else{
+      searchParams.set('type' , newType)
+      window.history.pushState(
+        null,
+        "",
+        `?${searchParams.toString()}`
+      )
+    }
+  }
 
 
   const handleDateChange = (date) => {
@@ -98,9 +112,33 @@ function FlightSelection() {
     )
   },[])*/ 
 
+  const isBusActive = type === 'bus';
+  const isTrainActive = type === 'train';
+  const isPlaneActive = type === 'plane';
+
+
   return (
     <div className='w-[500px] h-[600px] flex flex-col rounded-lg bg-stone-50 p-6 gap-12 mx-auto my-auto shadow-md'>
-      <FlightVehicleHeader/>
+        <div className='mx-auto grid grid-flow-row grid-cols-3 justify-between w-full h-16 gap-3'>
+        <div className={`cursor-pointer hover:bg-stone-300 w-full h-full rounded-lg bg-slate-100 shadow-xl transition-all duration-300 ease-in-out flex ${isBusActive ? 'bg-slate-300': ''}`}
+        onClick={() => handleActiveFlightTypeChange('bus')}
+        ><DirectionsBusIcon className='mx-auto my-auto w-full h-full'
+        
+        />
+        </div>
+        <div className={`cursor-pointer hover:bg-stone-300 w-full h-full rounded-lg bg-slate-100 shadow-xl transition-all duration-300 ease-in-out flex ${isTrainActive ? 'bg-slate-300': ''}`}
+        onClick={() => handleActiveFlightTypeChange('train')}
+        ><TrainIcon className='w-full h-full mx-auto my-auto'
+        
+        />
+        </div>
+        <div className={`cursor-pointer hover:bg-stone-300 w-full h-full rounded-lg bg-slate-100 shadow-xl transition-all duration-300 ease-in-out flex ${isPlaneActive ? 'bg-slate-300': ''}`}
+        onClick={() => handleActiveFlightTypeChange('plane')}
+        ><AirplanemodeActiveIcon className='mx-auto my-auto'
+        
+        />
+        </div>
+      </div>
       <div className='flex justify-between' style={{alignItems:'center'}}>
         <PlaceIcon className='text-slate-600'/>
         <Select
@@ -145,10 +183,10 @@ function FlightSelection() {
 
       <Button 
       onClick={() => searchFlights()} className='bg-slate-800 w-32 mx-auto h-12 text-white disabled:bg-slate-300 disabled:cursor-not-allowed'
-      disabled={activeFlightType === '' || startingCity === '' || finishingCity === '' || year === ''}
+      disabled={type === '' || startingCity==='' || finishingCity==='' ||year===''}
       >Sefer Ara</Button>
     </div>
   );
 }
 
-export default FlightSelection;                                        
+export default FlightSelection;

@@ -22,7 +22,7 @@ code {
 }
 
 .healthy-button {
-  @apply bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg cursor-pointer
+  @apply bg-gradient-to-br from-indigo-500 to-pink-500
 }
 
 .healthy-button-secondary {
