@@ -13,28 +13,37 @@ import { useNavigate } from 'react-router-dom';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import TrainIcon from '@mui/icons-material/Train';
 import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
+import {days} from '../data/days'
+import {months} from '../data/months'
 
 
 function FlightSelection() {
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(window.location.search);
-  const startingCityID = searchParams.get('sid') || 0;
-  const finishingCityID = searchParams.get('eid') || 0;
+  const startingCityID = searchParams.get('sid');
+  const finishingCityID = searchParams.get('eid');
   const year = searchParams.get('year');
   const monthID = searchParams.get('monthID');
   const dayID = searchParams.get('dayID');
   const type = searchParams.get('type');
-  const {toast, activeFlightType} = useContext(MainContext);
+
+  useEffect(() => {
+    console.log(year);
+  }, [])
+
+  const defaultValue = year === null ? dayjs() : dayjs(`${dayID}/${monthID}/${year}`) // calısmıyo
+
+  const [activeType, setActiveType] = useState('');
   //const [startingCityID, setStartingCityID] = useState(0);
   //const [finishingCityID, setFinishingCityID] = useState(0);
   const [startingCity, setStartingCity] = useState('');
   const [finishingCity, setFinishingCity] = useState('');
-  const [date, setDate] = useState({});
+  const [date, setDate] = useState({
+    monthID : '',
+    dayID : '',
+    year : ''
+  });
 
-  useEffect(() => {
-    setStartingCity(Object.keys(cities)[startingCityID]);
-    setFinishingCity(Object.keys(cities)[finishingCityID]);
-  }, [])
 
   useEffect(() => {
     console.log(searchParams.toString());
@@ -46,7 +55,7 @@ function FlightSelection() {
     console.log('city name' ,cityName);
     setStartingCity(cityName);
     //setStartingCityID(cities[cityName])
-    searchParams.set('sid', cities[cityName])
+    cityName !== undefined ? searchParams.set('sid', cities[cityName]) : searchParams.delete('sid');
     window.history.pushState(
       null,
       "",
@@ -57,7 +66,7 @@ function FlightSelection() {
   const handleFinishingCityChange = (event) => {
     const cityName = event.target.value;
     setFinishingCity(cityName);
-    searchParams.set('eid', cities[cityName])
+    cityName !== undefined ? searchParams.set('eid', cities[cityName]): searchParams.delete('eid');
     //setFinishingCityID(cities[cityName]);
     window.history.pushState(
       null,
@@ -68,15 +77,18 @@ function FlightSelection() {
   };
   const handleActiveFlightTypeChange = (newType) => {
     if(type === newType){
-      searchParams.set('type' , '')
+      searchParams.delete('type');
+      setActiveType('');
     } else{
-      searchParams.set('type' , newType)
+      searchParams.set('type' , newType);
+      setActiveType(newType)
+    }
       window.history.pushState(
         null,
         "",
         `?${searchParams.toString()}`
       )
-    }
+    
   }
 
 
@@ -85,6 +97,11 @@ function FlightSelection() {
     searchParams.set('monthID', date.$M);
     searchParams.set('year', date.$y);
     searchParams.set('dayID', date.$D);
+    setDate({
+      'monthID' : date.$M,
+      'year' : date.$y,
+      'dayID' : date.$D
+    })
     window.history.pushState(
       null,
       "",
@@ -120,19 +137,19 @@ function FlightSelection() {
   return (
     <div className='w-[500px] h-[600px] flex flex-col rounded-lg bg-stone-50 p-6 gap-12 mx-auto my-auto shadow-md'>
         <div className='mx-auto grid grid-flow-row grid-cols-3 justify-between w-full h-16 gap-3'>
-        <div className={`cursor-pointer hover:bg-stone-300 w-full h-full rounded-lg bg-slate-100 shadow-xl transition-all duration-300 ease-in-out flex ${isBusActive ? 'bg-slate-300': ''}`}
+        <div className={`cursor-pointer hover:bg-stone-300 w-full h-full rounded-lg bg-slate-100 shadow-xl transition-all duration-300 ease-in-out flex ${type === 'bus' ? 'bg-slate-300' : ''} ${activeType === 'bus' ? 'bg-slate-300': ''}`}
         onClick={() => handleActiveFlightTypeChange('bus')}
         ><DirectionsBusIcon className='mx-auto my-auto w-full h-full'
         
         />
         </div>
-        <div className={`cursor-pointer hover:bg-stone-300 w-full h-full rounded-lg bg-slate-100 shadow-xl transition-all duration-300 ease-in-out flex ${isTrainActive ? 'bg-slate-300': ''}`}
+        <div className={`cursor-pointer hover:bg-stone-300 w-full h-full rounded-lg bg-slate-100 shadow-xl transition-all duration-300 ease-in-out flex ${type === 'train' ? 'bg-slate-300' : ''} ${activeType === 'train' ? 'bg-slate-300': ''}`}
         onClick={() => handleActiveFlightTypeChange('train')}
         ><TrainIcon className='w-full h-full mx-auto my-auto'
         
         />
         </div>
-        <div className={`cursor-pointer hover:bg-stone-300 w-full h-full rounded-lg bg-slate-100 shadow-xl transition-all duration-300 ease-in-out flex ${isPlaneActive ? 'bg-slate-300': ''}`}
+        <div className={`cursor-pointer hover:bg-stone-300 w-full h-full rounded-lg bg-slate-100 shadow-xl transition-all duration-300 ease-in-out flex ${type === 'plane' ? 'bg-slate-300' : ''} ${activeType === 'plane' ? 'bg-slate-300': ''}`}
         onClick={() => handleActiveFlightTypeChange('plane')}
         ><AirplanemodeActiveIcon className='mx-auto my-auto'
         
@@ -142,7 +159,7 @@ function FlightSelection() {
       <div className='flex justify-between' style={{alignItems:'center'}}>
         <PlaceIcon className='text-slate-600'/>
         <Select
-          
+          defaultSelectedKeys={[Object.keys(cities)[startingCityID -1]] || 'Şehir seçiniz...'}
           label="Starting City"
           className='max-w-xs mx-auto shadow-lg'
           startContent={<LocationCityIcon/>}
@@ -160,6 +177,7 @@ function FlightSelection() {
       <div className='flex justify-between' style={{alignItems:'center'}}>
         <ExploreIcon className='text-slate-600'/>
         <Select
+        defaultSelectedKeys={[Object.keys(cities)[finishingCityID -1]]}
           label="Finishing City"
           className='max-w-xs mx-auto shadow-lg'
           startContent={<LocationCityIcon/>}
@@ -175,15 +193,15 @@ function FlightSelection() {
       </div>
       <DatePicker
         label="Tarih seçiniz"
-        defaultValue={dayjs()}
+        defaultValue={year === null ? dayjs() : defaultValue}
         onChange={(newValue) => handleDateChange(newValue)}
         format='DD / MM / YYYY'
         className='bg-white rounded-l shadow-xl'
       />
 
       <Button 
-      onClick={() => searchFlights()} className='bg-slate-800 w-32 mx-auto h-12 text-white disabled:bg-slate-300 disabled:cursor-not-allowed'
-      disabled={type === '' || startingCity==='' || finishingCity==='' ||year===''}
+      onClick={() => searchFlights()} 
+      className={`bg-slate-800 w-32 mx-auto h-12 text-white ${((startingCity !== '' || startingCityID !== null) && (finishingCity !== '' || finishingCityID !== null) && (activeType !== '' || type !== null) && (date.year !== '' || year !== null))? 'healthy-button' : 'disabled-button'}`}
       >Sefer Ara</Button>
     </div>
   );

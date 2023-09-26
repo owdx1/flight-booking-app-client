@@ -18,15 +18,19 @@ code {
 }
 
 .disabled-button {
-  @apply bg-slate-200 text-gray-400 
+  @apply bg-slate-200 text-gray-400 pointer-events-none
 }
 
 .healthy-button {
-  @apply bg-gradient-to-br from-indigo-500 to-pink-500
+  @apply bg-gradient-to-br from-indigo-500 to-pink-500 text-white
 }
 
 .healthy-button-secondary {
   @apply bg-gradient-to-tr from-pink-600 to-yellow-100 text-white shadow-lg cursor-pointer
+
+}
+.healthy-button-third {
+  @apply bg-cyan-700 text-white shadow-lg cursor-pointer
 
 }
 

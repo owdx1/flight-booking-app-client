@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, AccordionItem, Button, Chip, CircularProgress } from '@nextui-org/react'
+import { Accordion, AccordionItem, Button, Chip, CircularProgress, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/react'
 import { useParams } from 'react-router-dom';
 import { MainContext, useContext } from '../useContext/context';
 import { cities } from '../data/cities';
@@ -21,6 +21,8 @@ import { Badge } from '@nextui-org/react';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import {Popover, PopoverTrigger, PopoverContent} from "@nextui-org/react";
+import FaceIcon from '@mui/icons-material/Face';
+import Face2Icon from '@mui/icons-material/Face2';
 
 
 const SearchedFlights = () => {
@@ -43,7 +45,13 @@ const SearchedFlights = () => {
   const dayID = searchParams.get('dayID');
   const type = searchParams.get('type');
   const selectedSeatId = searchParams.get('selectedSeatID');
+  const gender = searchParams.get('gender');
+  const [selectGenderUseState , setSelectGenderUseState] = useState('');
   const [selectedSeatIdUseState , setSelectedSeatIdUseState] = useState('');
+  const [seatNo, setSeatNo] = useState('');
+  const [flightTime, setFlightTime] = useState('');
+  const [firmName , setFirmName] = useState('');
+  const [bookingPrice, setBookingPrice] = useState(0);
   const defaultDate = new Date(year, monthID, dayID);
   
   const [isLoading , setIsloading] = useState(false);
@@ -80,6 +88,7 @@ const SearchedFlights = () => {
         if(response.status === 200) {
           setCurrentFlights(responseData.flights);
           console.log(responseData.flights);
+          console.log(responseData.flights);
           
         }
         
@@ -104,7 +113,7 @@ const SearchedFlights = () => {
     )
   };
   const handleSelectedSeatIdChange = (seatId) => {
-    searchParams.set('selectedCityID' , seatId);
+    searchParams.set('selectedSeatID' , seatId);
     if(selectedSeatIdUseState === seatId) {
       setSelectedSeatIdUseState('');
     }
@@ -131,6 +140,20 @@ const SearchedFlights = () => {
     )
    
   };
+  const stateData = {
+    eid,
+    sid,
+    monthID,
+    year,
+    dayID,
+    type,
+    gender:selectGenderUseState,
+    selectedSeatId,
+    seatNo,
+    firmName,
+    flightTime,
+    bookingPrice
+  }
 
 
   if(isLoading === true) {
@@ -140,11 +163,60 @@ const SearchedFlights = () => {
       </div>
     )
   }
-  const handleNavigatePayment = () => {
+  const handleNavigatePayment = (stateData) => {
 
-      navigate(`/payment?${searchParams}`)
+      navigate(`/payment`, {state: stateData})
     
   }
+  const handleGenderManChange = () => {
+    setSelectGenderUseState('male');
+    searchParams.set('gender', 'male');
+    window.history.pushState(
+      null,
+      "",
+      `?${searchParams.toString()}`
+    )
+  }
+  const handleGenderWomanChange = () => {
+    setSelectGenderUseState('female');
+    searchParams.set('gender', 'female');
+    window.history.pushState(
+      null,
+      "",
+      `?${searchParams.toString()}`
+    )
+  }
+   const seatChange = (gender , seatId , seatNo, firmName, flightTime, bookingPrice) => {
+
+    if(seatId === selectedSeatIdUseState) {
+      handleSelectedSeatIdChange('');
+      setSeatNo('');
+      setFirmName('');
+      setFlightTime('');
+      setBookingPrice(0);
+      return;
+    } else {
+      handleSelectedSeatIdChange(seatId);
+      setSeatNo(seatNo);
+      setFirmName(firmName);
+      setFlightTime(flightTime);
+      setBookingPrice(parseInt(bookingPrice));
+    }
+
+
+    if (gender === 'male'){
+      handleGenderManChange();
+    } else if (gender === 'female'){
+      handleGenderWomanChange();
+    }
+
+    
+
+
+
+   }
+
+
 
   return ( 
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -254,18 +326,22 @@ const SearchedFlights = () => {
                         let direction = flight.direction;
                         const searchFirst = direction.indexOf(parseInt(sid));
                         const searchSecond = direction.indexOf(parseInt(eid));
-                        const seatFirst = direction.indexOf(parseInt(seat.selectedFirstCityId));
-                        const seatSecond = direction.indexOf(parseInt(seat.selectedSecondCityId));
                         
+                        const seatFirst = parseInt(seat.selectedFirstCityId);
+                        const seatSecond = parseInt(seat.selectedSecondCityId);
                         
+                        console.log('sırasıyla indexler' , searchFirst , searchSecond , seatFirst , seatSecond);
                         
-                        if (searchFirst <= seatFirst && searchSecond <= seatFirst) {
+                        if(seatFirst === -1 && seatSecond === -1){
+                          selectedColor = 'text-stone-200'
+                        }
+                        else if (searchFirst <= seatFirst && searchSecond <= seatFirst) {
                           selectedColor = 'text-stone-200';
                         } 
-                        else if (searchFirst >= seatSecond && searchSecond >= searchSecond) {
+                        else if (searchFirst >= seatSecond && searchSecond >= seatSecond) {
                           selectedColor = 'text-stone-200';
                         }
-                        else if (searchFirst > searchFirst && searchSecond < searchSecond) {
+                        else if (searchFirst > seatFirst && searchSecond < seatSecond) {
                           selectedColor = 'text-stone-200';
                         }
                         else {
@@ -285,28 +361,43 @@ const SearchedFlights = () => {
                           selectedColor = 'text-stone-200';
                         }*/
                         
-                        
+                       
 
                         
                         return (
                           
-                          <div className={`cursor-pointer  ${selectedColor === 'text-[#c7e2fb]' ? 'pointer-events-none' : ''} `} onClick={() => {
-                            seat._id === selectedSeatIdUseState ? handleSelectedSeatIdChange('') : handleSelectedSeatIdChange(seat._id)
-                          }}
                           
-                          >
-                          <Badge className='h-0 w-0' content={seat.seatNumber}>
-                            <EventSeatIcon style={{ fontSize:'32px'}}
-                            className={`${selectedSeatIdUseState === seat._id ? 'text-green-400': selectedColor} transition-all duration-300 ease-in-out`}/>
-                          </Badge>
-                          </div>
+                        <Dropdown placement="bottom" offset={20}>
+                          <DropdownTrigger>
+                            <Button variant='light' className={`${selectedColor === 'text-[#c7e2fb]' ? 'pointer-events-none' : ''}`}
+                            onClick={() => {
+                              
+                              if (seat._id === selectedSeatIdUseState) {
+                                handleSelectedSeatIdChange('');
+                                setSeatNo('');
+                                setFirmName('');
+                                setFlightTime('');
+                                return;
+                              }
+                            }}>
+                              <Badge className='h-0 w-0' content={seat.seatNumber}>
+                              <EventSeatIcon style={{ fontSize:'32px'}}
+                              className={`${selectedSeatIdUseState === seat._id ? 'text-green-400': selectedColor} transition-all duration-300 ease-in-out`}/>
+                            </Badge>
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu>
+                            <DropdownItem onClick={() => seatChange('male' , seat._id , seat.seatNumber, flight.firmName, flight.flightTime, flight.intercityPrice)} endContent={<FaceIcon/>}>Erkek</DropdownItem>
+                            <DropdownItem onClick={() => seatChange('female', seat._id, seat.seatNumber, flight.firmName, flight.flightTime, flight.intercityPrice)} endContent={<Face2Icon/>}>Kadın</DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
                           
                           
                         )
                       })}
                     </div>
                     <div className='right-0 mt-2'>
-                      <Button onClick={() => handleNavigatePayment()} className={`${selectedSeatIdUseState === '' ? 'disabled-button' : 'healthy-button'} text-gray-100`}>
+                      <Button onClick={() => handleNavigatePayment(stateData)} className={`${selectedSeatIdUseState === '' ? 'disabled-button' : 'healthy-button'} text-gray-100`}>
                         onayla ve devam et
                       </Button>
                     </div>

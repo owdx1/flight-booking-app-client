@@ -13,6 +13,7 @@ import Modaltry from './pages/Modaltry';
 import Footer from './components/firmComponents/Footer';
 import SearchedFlights from './pages/SearchedFlights';
 import Payment from './pages/Payment';
+import ScrollButton from './utils/ScrollButton';
 
 
 
@@ -65,6 +66,7 @@ function App() {
 
       {/*<Footer/>*/}
       <ToastContainer/>
+      <ScrollButton/>
     </MainContext.Provider>
   
   );
