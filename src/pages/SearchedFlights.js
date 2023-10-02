@@ -23,6 +23,8 @@ import { useNavigate } from 'react-router-dom';
 import {Popover, PopoverTrigger, PopoverContent} from "@nextui-org/react";
 import FaceIcon from '@mui/icons-material/Face';
 import Face2Icon from '@mui/icons-material/Face2';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import { SERVER_URL } from '../config';
 
 
 const SearchedFlights = () => {
@@ -75,7 +77,7 @@ const SearchedFlights = () => {
     const searchFlights = async () => {
       try {
         setIsloading(true)
-        const response = await fetch(`http://localhost:5000/search`, {
+        const response = await fetch(`${SERVER_URL}/search`, {
           method:'POST',
           headers: {
             'Content-Type' :'application/json'
@@ -274,10 +276,21 @@ const SearchedFlights = () => {
 
         </div>
         <div className='w-[78rem] h-full  flex justify-center mx-auto'> 
+          
+          {currentFlights.length === 0 && 
+          <div className='w-full flex mt-12'>
+            <Chip variant='light' className='border-none mx-auto text-lg'
+            endContent={<SentimentVeryDissatisfiedIcon/>}
+            >
+              Aradığınız tarihte bir sefer bulunamadı.. Lütfen tekrar deneyiniz
+            </Chip>
+          </div>
+          
+          } 
           <Accordion className='mx-auto'>
           
-                  
-            {currentFlights.map((flight) => {
+            
+            {currentFlights.length !== 0 && currentFlights.map((flight) => {
 
               return (
 

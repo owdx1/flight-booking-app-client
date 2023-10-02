@@ -7,7 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
-import { Select, SelectItem } from '@nextui-org/react';
+import { Chip, Select, SelectItem } from '@nextui-org/react';
 import {cities} from '../data/cities'
 import { useNavigate } from 'react-router-dom';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
@@ -15,9 +15,12 @@ import TrainIcon from '@mui/icons-material/Train';
 import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
 import {days} from '../data/days'
 import {months} from '../data/months'
+import 'dayjs/locale/tr';
 
 
 function FlightSelection() {
+
+  dayjs.locale('tr');
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(window.location.search);
   const startingCityID = searchParams.get('sid');
@@ -43,6 +46,8 @@ function FlightSelection() {
     dayID : '',
     year : ''
   });
+
+  const [displayedDate, setDisplayedDate] = useState(dayjs());
 
 
   useEffect(() => {
@@ -133,9 +138,21 @@ function FlightSelection() {
   const isTrainActive = type === 'train';
   const isPlaneActive = type === 'plane';
 
+  const handleTodayClick = () => {
+    const today = dayjs();
+    handleDateChange(today);
+    setDisplayedDate(today);
+  };
+
+  const handleTomorrowClick = () => {
+    const tomorrow = dayjs().add(1, 'day');
+    handleDateChange(tomorrow);
+    setDisplayedDate(tomorrow);
+  };
+
 
   return (
-    <div className='w-[500px] h-[600px] flex flex-col rounded-lg bg-stone-50 p-6 gap-12 mx-auto my-auto shadow-md'>
+    <div className='w-[500px] h-[600px] flex flex-col rounded-lg bg-stone-50 p-6 gap-8 mx-auto my-auto shadow-md'>
         <div className='mx-auto grid grid-flow-row grid-cols-3 justify-between w-full h-16 gap-3'>
         <div className={`cursor-pointer hover:bg-stone-300 w-full h-full rounded-lg bg-slate-100 shadow-xl transition-all duration-300 ease-in-out flex ${type === 'bus' ? 'bg-slate-300' : ''} ${activeType === 'bus' ? 'bg-slate-300': ''}`}
         onClick={() => handleActiveFlightTypeChange('bus')}
@@ -193,11 +210,17 @@ function FlightSelection() {
       </div>
       <DatePicker
         label="Tarih seçiniz"
-        defaultValue={year === null ? dayjs() : defaultValue}
+        value={displayedDate}
         onChange={(newValue) => handleDateChange(newValue)}
         format='DD / MM / YYYY'
         className='bg-white rounded-l shadow-xl'
+        disablePast
+        locale="tr"      
       />
+      <div className='w-full flex gap-3 m-0 p-0 justify-between'>
+        <div className='w-full flex bg-slate-200 rounded-lg hover:bg-slate-100 cursor-pointer'  onClick={handleTodayClick}><Chip variant='light' className='mx-auto'>Bugün</Chip></div>
+        <div className='w-full flex bg-slate-200 rounded-lg hover:bg-slate-100 cursor-pointer' onClick={handleTomorrowClick}><Chip variant='light' className='mx-auto'>Yarın</Chip></div>
+      </div>
 
       <Button 
       onClick={() => searchFlights()} 

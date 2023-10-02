@@ -9,6 +9,7 @@ import FirmDrivers from '../components/firmComponents/FirmDrivers';
 import FirmFlights from '../components/firmComponents/FirmFlights';
 import { FirmContext } from '../useContext/firmContext';
 import { toast } from 'react-toastify';
+import { SERVER_URL } from '../config';
 
 
 
@@ -25,7 +26,7 @@ const FirmDashboard = () => {
       const firmToken = localStorage.getItem('firmToken');
       const fetchFlights = async () => {
         try {
-          const response = await fetch('http://localhost:5000/flight/get-flights' ,{
+          const response = await fetch(`${SERVER_URL}/flight/get-flights` ,{
             headers: {
               'authorization' : `Bearer ${firmToken}`
             }
@@ -63,7 +64,7 @@ const FirmDashboard = () => {
       const fetchProfile = async () => {
 
         try {
-          const response = await fetch(`http://localhost:5000/firm/dashboard`, {
+          const response = await fetch(`${SERVER_URL}/firm/dashboard`, {
           headers:{
             Authorization: `Bearer ${firmToken}`
           }

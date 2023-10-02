@@ -12,6 +12,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
+import { SERVER_URL } from '../config';
 
 
 
@@ -110,7 +111,7 @@ const FirmAuth = () => {
 
   const handleRegister = async () => {
     setIsLoading(true);
-    const response = await fetch('http://localhost:5000/firm/register' , {
+    const response = await fetch(`${SERVER_URL}/firm/register` , {
       method:'POST',
       headers:{
         'Content-Type':'application/json'
@@ -131,7 +132,7 @@ const FirmAuth = () => {
   }
   const handleLogin = async () => {
     setIsLoadingLogin(true);
-    const response = await fetch('http://localhost:5000/firm/login' , {
+    const response = await fetch(`${SERVER_URL}/firm/login` , {
       method:'POST',
       headers:{
         'Content-Type':'application/json'

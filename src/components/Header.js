@@ -9,6 +9,7 @@ import CoPresentIcon from '@mui/icons-material/CoPresent';
 import LogoutIcon from '@mui/icons-material/Logout';
 import logo from '../images/biletinyo-logo.jpg'
 import logoBakgroundless from '../images/biletinyo-logo-removebg-preview.png'
+import {SERVER_URL} from '../config'
 const Header = () => {
   const navigate = useNavigate();
 
@@ -30,7 +31,7 @@ const Header = () => {
       const fetchProfile = async () => {
 
         try {
-          const response = await fetch(`http://localhost:5000/firm/dashboard`, {
+          const response = await fetch(`${SERVER_URL}/firm/dashboard`, {
           headers:{
             Authorization: `Bearer ${firmToken}`
           }

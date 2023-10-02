@@ -18,6 +18,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 import CurrencyLiraIcon from '@mui/icons-material/CurrencyLira';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@nextui-org/react";
+import { SERVER_URL } from '../config';
 
 const TCIDRegex = /^[1-9]{1}[0-9]{9}[02468]{1}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,7 +86,7 @@ const Payment = () => {
     try {
       setIsLoadingPayment(true);
       
-      const response = await fetch('http://localhost:5000/payment/receive-payment' , {
+      const response = await fetch(`${SERVER_URL}/payment/receive-payment` , {
         headers:{
           'Content-Type':'application/json'
         },

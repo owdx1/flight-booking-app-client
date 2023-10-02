@@ -14,7 +14,16 @@ import AddIcon from '@mui/icons-material/Add';
 import TrainIcon from '@mui/icons-material/Train';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
+import 'dayjs/locale/tr';
+
+import {SERVER_URL} from '../../config'
+
+
+
+
 const CreateFirmModal = () => {
+  
+  dayjs.locale("tr");
 
   {/****
 <Textarea 
@@ -87,14 +96,12 @@ const CreateFirmModal = () => {
   
   const handleDoublePathChange = (e, type , startingCityId, finishingCityId) => {
     const input = e.target.value
-    console.log(input);
     
     const currentObjArray = doublePathArray.filter((path) => (path.startingCityId === startingCityId && path.finishingCityId === finishingCityId));
     
     if(currentObjArray.length !== 0){
-      console.log('suanki currentObjArray' , currentObjArray);
+      
       let currentObj = currentObjArray[0];
-      console.log('suanki currentObj' , currentObj);
       const restOfTheArray = doublePathArray.filter((path) => path !== currentObj);
       if(type === 'price') currentObj.price = input;
       if(type === 'minutes') currentObj.minutes = input;
@@ -136,7 +143,7 @@ const CreateFirmModal = () => {
     try {
       
       setIsLoadingCreateFlight(true);
-      const response = await fetch (`http://localhost:5000/flight/create-flight`, {
+      const response = await fetch (`${SERVER_URL}/flight/create-flight`, {
         method:'POST',
         body:JSON.stringify({direction , flightTime , flightDate , flightType ,selectedCaptainId , selectedHandmanId , doublePathArray, flightDateDateObj}),
         headers:{
@@ -147,7 +154,7 @@ const CreateFirmModal = () => {
 
       const data = await response.json();
       const {message} = data;
-      console.log(message);
+      
       setIsLoadingCreateFlight(false);
 
       if(response.status === 200) {
@@ -234,6 +241,7 @@ const CreateFirmModal = () => {
                   onChange={(newValue) => handleFlightDateChange(newValue)}
                   format='DD / MM / YYYY'
                   className='bg-white rounded-l shadow-xl'
+                  locate="tr"
                   
                   
                 />

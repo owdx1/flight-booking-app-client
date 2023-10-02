@@ -91,17 +91,16 @@ const FirmFlights = () => {
 
 
   useEffect(() => {
-    console.log(currentFlights);
+    
   
     if (isSwitchActive === true) {
       const filtered = currentFlights.filter((flight) => {
         const flightDate = flight.flightDateDateObj !== null ? dayjs(flight.flightDateDateObj) : {};
-        console.log('flightDate dayjs e donustukten sonra' , flightDate);
         
 
         return (flightDate.$y >= todaysDate.$y && flightDate.$M >= todaysDate.$M && flightDate.$D >= todaysDate.$D);
       });
-      console.log('filtered flights', filtered);
+      
       setDisplayedFlights(filtered);
     } else {
       setDisplayedFlights(currentFlights);
@@ -207,7 +206,7 @@ const FirmFlights = () => {
               </div>
               <div className='w-[calc(100%-29rem)] h-48 flex flex-wrap gap-1.5 ml-2 mt-2'>
                 {flight.seats.map((seat) => {
-                  console.log(seat.bookersInformation);
+                  
                   let totalMoneyFromThisSeat = 0;
                   seat.bookersInformation.map((booker) => {
                     totalMoneyFromThisSeat += booker.customersTotalPayment
